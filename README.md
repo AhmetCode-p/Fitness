@@ -1,6 +1,6 @@
-# SPLIT — Haftalık Antrenman Programı
+# Forge — Haftalık Antrenman Programı
 
-SPLIT, haftalık antrenman programlarını oluşturmanı, takip etmeni ve tek bir kod ile paylaşmanı sağlayan, tamamen tarayıcıda çalışan (sunucusuz) bir fitness uygulamasıdır.
+Forge, haftalık antrenman programlarını oluşturmanı, takip etmeni ve tek bir kod ile paylaşmanı sağlayan, tamamen tarayıcıda çalışan (sunucusuz) bir fitness uygulamasıdır.
 
 ## Özellikler
 
@@ -18,12 +18,12 @@ SPLIT, haftalık antrenman programlarını oluşturmanı, takip etmeni ve tek bi
 Proje sunucusuzdur; tek yapman gereken HTML dosyalarını tarayıcıda açmak veya GitHub Pages üzerinden yayınlamak.
 
 ```
-https://ahmetcode-p.github.io/Fitness/antrenmanv5.html
+https://ahmetcode-p.github.io/Fitness/forgev5.html
 ```
 
 ### Program oluştur
 
-1. `antrenmanv5.html` dosyasını aç.
+1. `Forgev5.html` dosyasını aç.
 2. Her gün için kas grubunu ve hareketleri gir (isim, set, tekrar).
 3. **"Bitir & Oluştur"** de — program kaydedilir.
 
