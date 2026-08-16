@@ -189,6 +189,30 @@
   }
   .ex-row:last-of-type { border-bottom: none; }
 
+  .rest-row {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0.4rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .rest-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #8a8a8a;
+  }
+
+  .rest-note {
+    margin: 1rem 0;
+    padding: 0.7rem 1rem;
+    border: 1px dashed #e67e22;
+    border-radius: 8px;
+    color: #e67e22;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
   .ex-check {
     appearance: none;
     -webkit-appearance: none;
@@ -345,17 +369,214 @@
     .code-btns { flex-direction: row; }
     .code-btns .btn { width: 100%; flex: 1; }
   }
+
+  /* ---------- yardim (?) ---------- */
+
+  .lang-switch {
+    position: fixed;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 1000;
+    display: flex;
+    gap: 0.3rem;
+  }
+  .lang-switch button {
+    background: #111;
+    border: 1px solid #333;
+    color: #888;
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+  }
+  .lang-switch button:first-child { border-radius: 4px 0 0 4px; }
+  .lang-switch button:last-child { border-radius: 0 4px 4px 0; }
+  .lang-switch button.active { background: #e8ff47; border-color: #e8ff47; color: #0a0a0a; }
+
+  .help-btn {
+    position: fixed;
+    top: 0.9rem;
+    right: 0.9rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e8ff47;
+    border: none;
+    color: #0a0a0a;
+    font-size: 1.15rem;
+    font-weight: 900;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .help-btn:hover { filter: brightness(1.1); }
+
+  .help-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .help-modal.open { display: flex; }
+
+  .help-panel {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .help-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+
+  .help-lang {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .help-lang .btn.active { border-color: #e8ff47; color: #e8ff47; }
+
+  .help-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 2px 8px;
+  }
+  .help-close:hover { color: #ff4747; }
+
+  .help-body h2 {
+    font-size: 1.05rem;
+    color: #e8ff47;
+    letter-spacing: 0.04em;
+    margin: 1.4rem 0 0.5rem;
+  }
+  .help-body h2:first-child { margin-top: 0; }
+  .help-body p, .help-body li { font-size: 0.8rem; color: #ccc; line-height: 1.55; }
+  .help-body ul { padding-left: 1.2rem; margin: 0.4rem 0; }
+  .help-body li { margin-bottom: 0.3rem; }
+  .help-body .code-line {
+    font-family: Consolas, monospace;
+    font-size: 0.72rem;
+    color: #e8ff47;
+    word-break: break-all;
+    background: #1a1a1a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+  }
+  .help-body table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+  .help-body th, .help-body td {
+    border: 1px solid #2a2a2a;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    text-align: left;
+    color: #ccc;
+  }
+  .help-body th { color: #e8ff47; background: #1a1a1a; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1 id="siteTitle">SPLIT</h1>
-  <p class="subtitle" id="siteSub">Haftalık Antrenman Programi Olusturucu <span id="siteVer" style="color:#e67e22;font-weight:bold">v5</span></p>
+  <h1 id="siteTitle">FORGE</h1>
+  <p class="subtitle"><span id="siteSub">Haftalik Antrenman Programi Olusturucu</span> <span id="siteVer" style="color:#e67e22;font-weight:bold">v5</span></p>
 </header>
 
 <div class="wrap">
   <div id="app"></div>
+</div>
+
+<div class="lang-switch">
+  <button id="langTrBtn" onclick="app.setLang('tr')">TR</button>
+  <button id="langEnBtn" onclick="app.setLang('en')">EN</button>
+</div>
+
+<button class="help-btn" onclick="app.helpOpen()" title="Yardim / Readme">&quest;</button>
+
+<div class="help-modal" id="helpModal">
+  <div class="help-panel">
+    <div class="help-top">
+      <div class="help-lang">
+        <button class="btn active" id="helpTrBtn" onclick="app.setLang('tr')">TR</button>
+        <button class="btn" id="helpEnBtn" onclick="app.setLang('en')">EN</button>
+      </div>
+      <button class="help-close" onclick="app.helpClose()">&times;</button>
+    </div>
+
+    <div class="help-body" id="helpBodyTr">
+      <h2>Forge nedir?</h2>
+      <p>Haftalik antrenman programlarini olustur, takip et ve tek bir kod ile paylas. Tamamen tarayicida calisir, hesap gerekmez.</p>
+
+      <h2>Ozellikler</h2>
+      <ul>
+        <li><b>7 gunluk program sihirbazi</b> &mdash; her gune kas grubu ve hareket ekle.</li>
+        <li><b>Antrenman takibi</b> &mdash; yapilan hareketleri isaretle, kilolari yaz.</li>
+        <li><b>Kod ile paylasim</b> &mdash; programi tek satirlik sıkistirilmis koda cevir, karsi taraf yapistirip acar.</li>
+        <li><b>Checksum korumasi</b> &mdash; kopyalamada bozulan kod aninda yakalanir, net uyari verilir.</li>
+        <li><b>Geriye donuk uyumluluk</b> &mdash; eski formatlar (ANT1./ANT2./ANT4.) da acilir.</li>
+        <li><b>Veri cihazda</b> &mdash; programlar ve ilerleme tarayici depolamasinda saklanir.</li>
+      </ul>
+
+      <h2>Nasil kullanilir?</h2>
+      <ul>
+        <li><b>Olustur:</b> Gun gun kas grubu ve hareketleri gir, "Bitir &amp; Olustur" de.</li>
+        <li><b>Takip et:</b> Kutucuklari isaretle, kilolari gir, hafta sonunda "Tumunu Sifirla".</li>
+        <li><b>Paylas:</b> Alttaki kodu "Kopyala" ile al. Instagram kodu bozabilir; WhatsApp, mail gibi uygulamalardan kodu paylasabilirsiniz.</li>
+      </ul>
+
+      <h2>Kod sistemi</h2>
+      <table>
+        <tr><th>Format</th><th>Aciklama</th></tr>
+        <tr><td>ANT1.</td><td>Ilk surum &mdash; duz base64 (2100+ karakter)</td></tr>
+        <tr><td>ANT2.</td><td>LZ + base64 ile sikistirilmis</td></tr>
+        <tr><td>ANT4.</td><td>LZ + URL-guvenli ozel alfabe (~680 karakter)</td></tr>
+        <tr><td>ANT5.</td><td>ANT4 + sağlamlik kontrolu (checksum) &mdash; guncel</td></tr>
+      </table>
+    </div>
+
+    <div class="help-body" id="helpBodyEn" style="display:none">
+      <h2>What is Forge?</h2>
+      <p>Create weekly workout programs, track them, and share them with a single code. Runs fully in the browser, no account needed.</p>
+
+      <h2>Features</h2>
+      <ul>
+        <li><b>7-day program wizard</b> &mdash; add a muscle group and exercises for each day.</li>
+        <li><b>Workout tracking</b> &mdash; check off completed exercises, log your weights.</li>
+        <li><b>Share via code</b> &mdash; turn the program into a one-line compressed code; the recipient pastes and opens it.</li>
+        <li><b>Checksum protection</b> &mdash; a corrupted copy is detected instantly with a clear message.</li>
+        <li><b>Backward compatible</b> &mdash; legacy formats (ANT1./ANT2./ANT4.) still open.</li>
+        <li><b>Data stays on device</b> &mdash; programs and progress are stored in browser storage.</li>
+      </ul>
+
+      <h2>How to use</h2>
+      <ul>
+        <li><b>Create:</b> fill in muscle groups and exercises day by day, then hit "Finish &amp; Create".</li>
+        <li><b>Track:</b> tick the boxes, log weights, then "Reset All" at the end of the week.</li>
+        <li><b>Share:</b> copy the code below with "Copy". Instagram can corrupt the code; you can share it via apps like WhatsApp or email.</li>
+      </ul>
+
+      <h2>Code system</h2>
+      <table>
+        <tr><th>Format</th><th>Description</th></tr>
+        <tr><td>ANT1.</td><td>First version &mdash; plain base64 (2100+ chars)</td></tr>
+        <tr><td>ANT2.</td><td>Compressed with LZ + base64</td></tr>
+        <tr><td>ANT4.</td><td>LZ + URL-safe custom alphabet (~680 chars)</td></tr>
+        <tr><td>ANT5.</td><td>ANT4 + integrity check (checksum) &mdash; current</td></tr>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -374,6 +595,106 @@
   var wizard = null; // { dayIndex, entries: { GUN: { tag, exercises: [{name,sets,reps}] } } }
 
   var app = document.getElementById('app');
+
+  /* ---------- dil ---------- */
+
+  var lang = localStorage.getItem('forge_lang') || 'tr';
+
+  var STR = {
+    tr: {
+      newProgram: 'YENI PROGRAM', openCode: 'Kodu Ac', cancel: 'Vazgec',
+      programName: 'Program Adi', programNamePh: 'Antrenman Programim',
+      day: 'Gun', muscleGroup: 'Bu gunun kas grubu (istege bagli)',
+      tagPh: 'Sirt - Biceps', exercisesSetsReps: 'Hareketler &mdash; set &mdash; tekrar',
+      exercisePh: 'Hareket (Bench Press)', setPh: 'Set', repsPh: 'Tekrar (8-12)',
+      'delete': 'Sil', addExercise: '+ Hareket Ekle', back: 'Geri', skipDay: 'Bu Gunu Atla',
+      finishCreate: 'Bitir &amp; Olustur', nextDay: 'Sonraki Gun',
+      newProgramBtn: 'Yeni Program', resetAll: 'Tumunu Sifirla', programCode: 'Program Kodu',
+      copy: 'Kopyala', share: 'Paylas', copied: 'Kopyalandi',
+      copiedToClipboard: 'Kod panoya kopyalandi.',
+      shareNotSupported: 'Paylas desteklenmiyor, kodu elle kopyala.',
+      copyFailed: 'Kopyalanamadi. Kodu elle secip kopyala.',
+      rename: 'Duzenle', renameTitle: 'Adi degistirmek icin tikla',
+      dayName: 'Gun adi', tagLabel: 'Etiket (bos birakilabilir)',
+      exercisesLabel: 'Hareketler (her satir bir hareket &mdash; isim | set/tekrar)',
+      save: 'Kaydet', planNamePrompt: 'Plan adi:', deleteConfirm: 'Bu plan silinsin mi?',
+      titleCreator: 'FORGE', subtitleWeekly: 'Haftalik Antrenman Programi',
+      subtitleBuilder: 'Haftalik Antrenman Programi Olusturucu',
+      defaultPlanName: 'Antrenman Programim', importedPlan: 'Icerilen Program',
+      dayFallback: 'GUN', codePh: 'Program kodu', codeShare: ' program kodun:\n',
+      codeEmpty: 'Kod bos gorunuyor. Kodu yapistirip tekrar dene.',
+      invalidCode: 'Gecersiz program kodu.', entered: 'Girilen:', length: 'uzunluk:', detail: 'Detay:',
+      codeBadHint: 'Kod eksik veya bozuk. Basinda "ANT5." (veya eski "ANT4."/"ANT2."/"ANT1.") ile basladigina emin ol.',
+      codeCorrupted: 'Kod kopyalama sirasinda bozulmus (eksik/fazla karakter). Kodu kaynaktan tam olarak kopyala.',
+      codeTooShort: 'Kod cok kisa - eksik kopyalanmis.',
+      invalidChar: 'gecersiz kod karakteri',
+      badDayStructure: 'Kod icindeki gun yapisi hatali (hareket listesi bulunamadi). Kodu mobilde yeniden kopyala.',
+      unexpectedError: 'Beklenmeyen hata:', noDays: 'Hic gun doldurulmadi. En az bir gune hareket eklemelisin.',
+      monday: 'PAZARTESI', tuesday: 'SALI', wednesday: 'CARSAMBA', thursday: 'PERSEMBE',
+      friday: 'CUMA', saturday: 'CUMARTESI', sunday: 'PAZAR',
+      restDay: 'Dinlenme Gunu', restNote: 'Cok mu dinlendik sanki :)'
+    },
+    en: {
+      newProgram: 'NEW PROGRAM', openCode: 'Open Code', cancel: 'Cancel',
+      programName: 'Program Name', programNamePh: 'My Workout Program',
+      day: 'Day', muscleGroup: 'Muscle group for this day (optional)',
+      tagPh: 'Back - Biceps', exercisesSetsReps: 'Exercises &mdash; sets &mdash; reps',
+      exercisePh: 'Exercise (Bench Press)', setPh: 'Sets', repsPh: 'Reps (8-12)',
+      'delete': 'Delete', addExercise: '+ Add Exercise', back: 'Back', skipDay: 'Skip This Day',
+      finishCreate: 'Finish &amp; Create', nextDay: 'Next Day',
+      newProgramBtn: 'New Program', resetAll: 'Reset All', programCode: 'Program Code',
+      copy: 'Copy', share: 'Share', copied: 'Copied',
+      copiedToClipboard: 'Code copied to clipboard.',
+      shareNotSupported: 'Sharing not supported, copy the code manually.',
+      copyFailed: 'Could not copy. Select and copy the code manually.',
+      rename: 'Edit', renameTitle: 'Click to rename',
+      dayName: 'Day name', tagLabel: 'Tag (optional)',
+      exercisesLabel: 'Exercises (one per line &mdash; name | sets/reps)',
+      save: 'Save', planNamePrompt: 'Plan name:', deleteConfirm: 'Delete this plan?',
+      titleCreator: 'FORGE', subtitleWeekly: 'Weekly Workout Program',
+      subtitleBuilder: 'Weekly Workout Program Builder',
+      defaultPlanName: 'My Workout Program', importedPlan: 'Imported Program',
+      dayFallback: 'DAY', codePh: 'Program code', codeShare: ' program code:\n',
+      codeEmpty: 'The code looks empty. Paste the code and try again.',
+      invalidCode: 'Invalid program code.', entered: 'Entered:', length: 'length:', detail: 'Detail:',
+      codeBadHint: 'The code is incomplete or corrupted. Make sure it starts with "ANT5." (or legacy "ANT4."/"ANT2."/"ANT1.").',
+      codeCorrupted: 'The code was corrupted while copying (missing/extra characters). Copy the code fully from the source.',
+      codeTooShort: 'The code is too short - copied incompletely.',
+      invalidChar: 'invalid code character',
+      badDayStructure: 'Invalid day structure in the code (exercise list not found). Re-copy the code on mobile.',
+      unexpectedError: 'Unexpected error:', noDays: 'No days were filled. You must add exercises to at least one day.',
+      monday: 'MONDAY', tuesday: 'TUESDAY', wednesday: 'WEDNESDAY', thursday: 'THURSDAY',
+      friday: 'FRIDAY', saturday: 'SATURDAY', sunday: 'SUNDAY',
+      restDay: 'Rest Day', restNote: 'Resting a lot, huh? :)'
+    }
+  };
+
+  var DAY_EN = { PAZARTESI: 'monday', SALI: 'tuesday', CARSAMBA: 'wednesday', PERSEMBE: 'thursday', CUMA: 'friday', CUMARTESI: 'saturday', PAZAR: 'sunday' };
+
+  function t(k) { return (STR[lang] && STR[lang][k] != null) ? STR[lang][k] : k; }
+
+  function dayLabel(d) {
+    var name = String(d || '');
+    if (lang === 'en' && DAY_EN[name]) return t(DAY_EN[name]);
+    return name;
+  }
+
+  function trDetail(d) {
+    if (lang !== 'en') return d;
+    return String(d || '').replace(/(\d+)\s+set/g, '$1 sets').replace(/(\d+)\s+tekrar/g, '$1 reps');
+  }
+
+  function setLang(l) {
+    if (l !== 'tr' && l !== 'en') l = 'tr';
+    lang = l;
+    try { localStorage.setItem('forge_lang', l); } catch (e) {}
+    var tb = document.getElementById('langTrBtn');
+    var eb = document.getElementById('langEnBtn');
+    if (tb) tb.classList.toggle('active', l === 'tr');
+    if (eb) eb.classList.toggle('active', l === 'en');
+    helpLang(l);
+    render();
+  }
 
   /* ---------- helpers ---------- */
 
@@ -838,7 +1159,7 @@
       var ch = code.charAt(i);
       var d = CODE_ALPHABET.indexOf(ch);
       if (d < 0) {
-        throw new Error('Hatali karakter "' + ch + '" (Unicode ' + code.charCodeAt(i) + ') pozisyon ' + i);
+        throw new Error(t('invalidChar') + ' "' + ch + '" (Unicode ' + code.charCodeAt(i) + ') pozisyon ' + i);
       }
       digits.push(d);
     }
@@ -929,11 +1250,11 @@
     var s = String(c || '').trim().replace(/\s+/g, '');
     if (s.indexOf('ANT5.') === 0) {
       var body = s.slice(5);
-      if (body.length < 4) throw new Error('Kod cok kisa - eksik kopyalanmis.');
+      if (body.length < 4) throw new Error(t('codeTooShort'));
       var packed = body.slice(0, -2);
       var ck = body.slice(-2);
       if (checksum(packed) !== ck) {
-        throw new Error('Kod kopyalama sirasinda bozulmus (eksik/fazla karakter). Kodu kaynaktan tam olarak kopyala.');
+        throw new Error(t('codeCorrupted'));
       }
       var bytes = codeToBytes(packed);
       var raw = '';
@@ -943,7 +1264,7 @@
     }
     if (s.indexOf('ANT4.') === 0) {
       var bytes = codeToBytes(s.slice(5));
-      if (!bytes) throw new Error('gecersiz kod karakteri');
+      if (!bytes) throw new Error(t('invalidChar'));
       var raw = '';
       for (var i = 0; i < bytes.length; i++) raw += String.fromCharCode(bytes[i]);
       var json = LZString._decompress(raw.length, 128, function (index) { return raw.charCodeAt(index); });
@@ -961,7 +1282,7 @@
   function importCode(raw) {
     try {
       var v = (raw || '').trim();
-      if (!v) { alert('Kod bos gorunuyor. Kodu yapistirip tekrar dene.'); return false; }
+      if (!v) { alert(t('codeEmpty')); return false; }
 
       var data = null;
       var errMsg = '';
@@ -969,24 +1290,24 @@
 
       if (!data || !data.d || !Array.isArray(data.d) || !data.d.length) {
         var preview = v.length > 12 ? v.slice(0, 12) + '...' : v;
-        alert('Gecersiz program kodu.\n\n'
-          + 'Girilen: "' + preview + '" (uzunluk: ' + v.length + ')\n'
-          + (errMsg ? 'Detay: ' + errMsg
-                    : 'Kod eksik veya bozuk. Basinda "ANT5." (veya eski "ANT4."/"ANT2."/"ANT1.") ile basladigina emin ol.'));
+        alert(t('invalidCode') + '\n\n'
+          + t('entered') + ' "' + preview + '" (' + t('length') + ' ' + v.length + ')\n'
+          + (errMsg ? t('detail') + ' ' + errMsg
+                    : t('codeBadHint')));
         return false;
       }
 
       for (var i = 0; i < data.d.length; i++) {
         if (!data.d[i] || !Array.isArray(data.d[i].exercises)) {
-          alert('Kod icindeki gun yapisi hatali (hareket listesi bulunamadi). Kodu mobilde yeniden kopyala.');
+          alert(t('badDayStructure'));
           return false;
         }
       }
 
-      var name = data.n || 'Icerilen Program';
+      var name = data.n || t('importedPlan');
       var suffix = 2;
       while (plans.some(function (x) { return x.name === name; })) {
-        name = (data.n || 'Icerilen Program') + ' ' + suffix++;
+        name = (data.n || t('importedPlan')) + ' ' + suffix++;
       }
       var plan = { id: uid(), name: name, days: data.d, created: Date.now() };
       plans.push(plan);
@@ -996,7 +1317,7 @@
       render();
       return true;
     } catch (e) {
-      alert('Beklenmeyen hata: ' + ((e && e.message) ? e.message : String(e)));
+      alert(t('unexpectedError') + ' ' + ((e && e.message) ? e.message : String(e)));
       return false;
     }
   }
@@ -1019,7 +1340,7 @@
 
     var done = function () {
       var btn = document.getElementById('copyPlanCodeBtn');
-      if (btn) btn.textContent = 'Kopyalandi';
+      if (btn) btn.textContent = t('copied');
     };
     var fallback = function () {
       ta.focus();
@@ -1029,7 +1350,7 @@
         document.execCommand('copy');
         done();
       } catch (e) {
-        alert('Kopyalanamadi. Kodu elle secip kopyala.');
+        alert(t('copyFailed'));
       }
     };
 
@@ -1044,13 +1365,13 @@
     var p = getPlan(pid);
     if (!p) return;
     var code = encodePlan(p);
-    var text = p.name + ' program kodun:\n' + code;
+    var text = p.name + t('codeShare') + code;
     if (navigator.share) {
       navigator.share({ title: p.name, text: text }).catch(function () {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code).then(function () {
-        alert('Kod panoya kopyalandi.');
-      }, function () { alert('Paylas desteklenmiyor, kodu elle kopyala.'); });
+        alert(t('copiedToClipboard'));
+      }, function () { alert(t('shareNotSupported')); });
     } else {
       alert(text);
     }
@@ -1075,45 +1396,45 @@
     var html = '';
 
     html += '<div class="toolbar">';
-    html += '<span class="title">YENI PROGRAM</span>';
-    html += '<input type="text" id="codeIn" class="code-input" placeholder="Program kodu" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
-    html += '<button class="btn" onclick="app.importFromInput()">Kodu Ac</button>';
-    html += '<button class="btn" onclick="app.wizCancel()">Vazgec</button>';
+    html += '<span class="title">' + t('newProgram') + '</span>';
+    html += '<input type="text" id="codeIn" class="code-input" placeholder="' + t('codePh') + '" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
+    html += '<button class="btn" onclick="app.importFromInput()">' + t('openCode') + '</button>';
+    html += '<button class="btn" onclick="app.wizCancel()">' + t('cancel') + '</button>';
     html += '</div>';
 
     html += '<div class="wizard-box">';
 
     html += '<div class="wiz-card">';
-    html += '<div class="field-label">Program Adi</div>';
-    html += '<input type="text" id="wizName" placeholder="Antrenman Programim" style="width:100%; margin-bottom:1rem" value="' + esc(wizard.name) + '" oninput="app.wizName(this.value)">';
+    html += '<div class="field-label">' + t('programName') + '</div>';
+    html += '<input type="text" id="wizName" placeholder="' + t('programNamePh') + '" style="width:100%; margin-bottom:1rem" value="' + esc(wizard.name) + '" oninput="app.wizName(this.value)">';
     html += '</div>';
 
     html += '<div class="step">';
-    html += '<div class="day-big">' + dayName + '</div>';
-    html += '<div class="counter">Gun ' + (wizard.dayIndex + 1) + ' / 7</div>';
+    html += '<div class="day-big">' + dayLabel(dayName) + '</div>';
+    html += '<div class="counter">' + t('day') + ' ' + (wizard.dayIndex + 1) + ' / 7</div>';
     html += '</div>';
 
     html += '<div class="wiz-card">';
-    html += '<div class="field-label">Bu gunun kas grubu (istege bagli)</div>';
-    html += '<input type="text" id="wizTag" placeholder="Sirt - Biceps" style="width:100%; margin-bottom:1rem" value="' + esc(entry.tag) + '" oninput="app.wizTag(this.value)">';
+    html += '<div class="field-label">' + t('muscleGroup') + '</div>';
+    html += '<input type="text" id="wizTag" placeholder="' + t('tagPh') + '" style="width:100%; margin-bottom:1rem" value="' + esc(entry.tag) + '" oninput="app.wizTag(this.value)">';
 
-    html += '<div class="field-label">Hareketler &mdash; set &mdash; tekrar</div>';
+    html += '<div class="field-label">' + t('exercisesSetsReps') + '</div>';
     entry.exercises.forEach(function (ex, i) {
       html += '<div class="ex-input-row">';
-      html += '<input type="text" class="in-name" placeholder="Hareket (Bench Press)" value="' + esc(ex.name) + '" oninput="app.exName(' + i + ',this.value)">';
-      html += '<input type="number" class="in-set" min="1" placeholder="Set" value="' + esc(ex.sets) + '" oninput="app.exSets(' + i + ',this.value)">';
-      html += '<input type="text" class="in-reps" placeholder="Tekrar (8-12)" value="' + esc(ex.reps) + '" oninput="app.exReps(' + i + ',this.value)">';
-      html += '<button class="del" title="Sil" ' + (entry.exercises.length > 1 ? 'onclick="app.exRemove(' + i + ')"' : 'disabled') + '>&times;</button>';
+      html += '<input type="text" class="in-name" placeholder="' + t('exercisePh') + '" value="' + esc(ex.name) + '" oninput="app.exName(' + i + ',this.value)">';
+      html += '<input type="number" class="in-set" min="1" placeholder="' + t('setPh') + '" value="' + esc(ex.sets) + '" oninput="app.exSets(' + i + ',this.value)">';
+      html += '<input type="text" class="in-reps" placeholder="' + t('repsPh') + '" value="' + esc(ex.reps) + '" oninput="app.exReps(' + i + ',this.value)">';
+      html += '<button class="del" title="' + t('delete') + '" ' + (entry.exercises.length > 1 ? 'onclick="app.exRemove(' + i + ')"' : 'disabled') + '>&times;</button>';
       html += '</div>';
     });
-    html += '<button class="add-ex" onclick="app.exAdd()">+ Hareket Ekle</button>';
+    html += '<button class="add-ex" onclick="app.exAdd()">' + t('addExercise') + '</button>';
     html += '</div>';
 
     html += '<div class="wiz-nav">';
-    if (wizard.dayIndex > 0) html += '<button class="btn" onclick="app.wizPrev()">Geri</button>';
-    html += '<button class="btn" onclick="app.wizSkip()">Bu Gunu Atla</button>';
+    if (wizard.dayIndex > 0) html += '<button class="btn" onclick="app.wizPrev()">' + t('back') + '</button>';
+    html += '<button class="btn" onclick="app.wizSkip()">' + t('skipDay') + '</button>';
     html += '<span class="grow"></span>';
-    html += '<button class="btn solid" onclick="app.wizNext()">' + (wizard.dayIndex === DAYS.length - 1 ? 'Bitir &amp; Olustur' : 'Sonraki Gun') + '</button>';
+    html += '<button class="btn solid" onclick="app.wizNext()">' + (wizard.dayIndex === DAYS.length - 1 ? t('finishCreate') : t('nextDay')) + '</button>';
     html += '</div>';
 
     html += '</div>';
@@ -1157,6 +1478,7 @@
 
   function finishWizard() {
     var days = [];
+    var training = 0;
     DAYS.forEach(function (d) {
       var e = wizard.entries[d];
       var exs = e.exercises
@@ -1170,15 +1492,20 @@
           if (reps) detail.push(reps + ' tekrar');
           return { name: name, detail: detail.join(' | ') };
         });
-      if (exs.length) days.push({ day: d, tag: e.tag.trim(), exercises: exs });
+      if (exs.length) {
+        training++;
+        days.push({ day: d, tag: e.tag.trim(), exercises: exs });
+      } else {
+        days.push({ day: d, tag: '', exercises: [] });
+      }
     });
 
-    if (!days.length) {
-      alert('Hic gun doldurulmadi. En az bir gune hareket eklemelisin.');
+    if (!training) {
+      alert(t('noDays'));
       return;
     }
 
-    var name = (wizard.name || '').trim() || 'Antrenman Programim';
+    var name = (wizard.name || '').trim() || t('defaultPlanName');
 
     var plan = { id: uid(), name: name, days: days, created: Date.now() };
     plans.push(plan);
@@ -1195,7 +1522,7 @@
     var title = document.getElementById('siteTitle');
     var sub = document.getElementById('siteSub');
     if (wizard) {
-      if (title) title.textContent = 'FORGE';
+      if (title) title.textContent = t('titleCreator');
       if (sub) sub.textContent = 'by Ahmet Efe SOYLEMEZ';
       renderWizard();
       return;
@@ -1203,21 +1530,25 @@
     var plan = getPlan(activeId);
     if (plan) {
       if (title) title.textContent = plan.name;
-      if (sub) sub.textContent = 'Haftalik Antrenman Programi';
+      if (sub) sub.textContent = t('subtitleWeekly');
       renderTracker(plan);
     } else {
-      if (title) title.textContent = 'SPLIT';
-      if (sub) sub.textContent = 'Haftalik Antrenman Programi Olusturucu';
+      if (title) title.textContent = 'FORGE';
+      if (sub) sub.textContent = t('subtitleBuilder');
       startWizard();
     }
   }
 
   function renderTracker(plan) {
     var state = getState(plan.id);
+    var restCount = 0;
+    plan.days.forEach(function (day) {
+      if (!day.exercises || !day.exercises.length) restCount++;
+    });
     var html = '';
 
     html += '<div class="toolbar">';
-    html += '<span class="title" title="Adi degistirmek icin tikla" onclick="app.renamePlan(\'' + plan.id + '\')">' + esc(plan.name) + '</span>';
+    html += '<span class="title" title="' + t('renameTitle') + '" onclick="app.renamePlan(\'' + plan.id + '\')">' + esc(plan.name) + '</span>';
     if (plans.length > 1) {
       html += '<select onchange="app.switchPlan(this.value)">';
       for (var i = 0; i < plans.length; i++) {
@@ -1225,10 +1556,10 @@
       }
       html += '</select>';
     }
-    html += '<input type="text" id="codeIn" class="code-input" placeholder="Program kodu" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
-    html += '<button class="btn" onclick="app.importFromInput()">Kodu Ac</button>';
-    html += '<button class="btn" onclick="app.newProgram()">Yeni Program</button>';
-    html += '<button class="btn danger" onclick="app.deletePlan(\'' + plan.id + '\')">Sil</button>';
+    html += '<input type="text" id="codeIn" class="code-input" placeholder="' + t('codePh') + '" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
+    html += '<button class="btn" onclick="app.importFromInput()">' + t('openCode') + '</button>';
+    html += '<button class="btn" onclick="app.newProgram()">' + t('newProgramBtn') + '</button>';
+    html += '<button class="btn danger" onclick="app.deletePlan(\'' + plan.id + '\')">' + t('delete') + '</button>';
     html += '</div>';
 
     html += '<div class="days-grid">';
@@ -1237,40 +1568,48 @@
       html += '<div class="day-card" id="card_' + di + '">';
       html += '<div class="day-head">';
       html += '<div class="grow">';
-      html += '<div class="day-label">' + esc(day.day) + '</div>';
+      html += '<div class="day-label">' + esc(dayLabel(day.day)) + '</div>';
       if (day.tag) html += '<div class="day-tag">' + esc(day.tag) + '</div>';
       html += '</div>';
-      html += '<button class="edit-link" title="Duzenle" onclick="app.editCard(\'' + plan.id + '\',' + di + ')">&#9998;</button>';
+      html += '<button class="edit-link" title="' + t('rename') + '" onclick="app.editCard(\'' + plan.id + '\',' + di + ')">&#9998;</button>';
       html += '</div>';
 
-      day.exercises.forEach(function (ex, ei) {
-        var id = di + '_' + ei;
-        var checked = state['c_' + id];
-        var kg = state['k_' + id] || '';
-        html += '<div class="ex-row">';
-        html += '<input type="checkbox" class="ex-check" ' + (checked ? 'checked' : '') + ' onchange="app.toggleEx(\'' + plan.id + '\',\'' + id + '\',this.checked)">';
-        html += '<div class="ex-info">';
-        html += '<span class="ex-name' + (checked ? ' done' : '') + '" id="name_' + id + '">' + esc(ex.name) + '</span>';
-        if (ex.detail) html += '<span class="ex-detail">' + esc(ex.detail) + '</span>';
-        html += '</div>';
-        html += '<div class="kg-wrap"><input class="kg-input" type="number" placeholder="--" value="' + esc(kg) + '" oninput="app.setKg(\'' + plan.id + '\',\'' + id + '\',this.value)"><span class="kg-label">kg</span></div>';
-        html += '</div>';
-      });
+      if (day.exercises && day.exercises.length) {
+        day.exercises.forEach(function (ex, ei) {
+          var id = di + '_' + ei;
+          var checked = state['c_' + id];
+          var kg = state['k_' + id] || '';
+          html += '<div class="ex-row">';
+          html += '<input type="checkbox" class="ex-check" ' + (checked ? 'checked' : '') + ' onchange="app.toggleEx(\'' + plan.id + '\',\'' + id + '\',this.checked)">';
+          html += '<div class="ex-info">';
+          html += '<span class="ex-name' + (checked ? ' done' : '') + '" id="name_' + id + '">' + esc(ex.name) + '</span>';
+          if (ex.detail) html += '<span class="ex-detail">' + esc(trDetail(ex.detail)) + '</span>';
+          html += '</div>';
+          html += '<div class="kg-wrap"><input class="kg-input" type="number" placeholder="--" value="' + esc(kg) + '" oninput="app.setKg(\'' + plan.id + '\',\'' + id + '\',this.value)"><span class="kg-label">kg</span></div>';
+          html += '</div>';
+        });
+      } else {
+        html += '<div class="rest-row"><span class="rest-label">' + t('restDay') + '</span></div>';
+      }
 
       html += '</div>';
     });
 
     html += '</div>';
 
-    html += '<button class="reset-btn" onclick="app.resetPlan(\'' + plan.id + '\')">Tumunu Sifirla</button>';
+    if (restCount > 3) {
+      html += '<div class="rest-note">' + t('restNote') + '</div>';
+    }
+
+    html += '<button class="reset-btn" onclick="app.resetPlan(\'' + plan.id + '\')">' + t('resetAll') + '</button>';
 
     html += '<div class="code-area">';
-    html += '<div class="field-label">Program Kodu</div>';
+    html += '<div class="field-label">' + t('programCode') + '</div>';
     html += '<div class="code-row">';
     html += '<textarea id="planCode" class="code-box" readonly>' + esc(encodePlan(plan)) + '</textarea>';
     html += '<div class="code-btns">';
-    html += '<button class="btn solid" id="copyPlanCodeBtn" onclick="app.copyPlanCode(\'' + plan.id + '\')">Kopyala</button>';
-    html += '<button class="btn" onclick="app.sharePlanCode(\'' + plan.id + '\')">Paylas</button>';
+    html += '<button class="btn solid" id="copyPlanCodeBtn" onclick="app.copyPlanCode(\'' + plan.id + '\')">' + t('copy') + '</button>';
+    html += '<button class="btn" onclick="app.sharePlanCode(\'' + plan.id + '\')">' + t('share') + '</button>';
     html += '</div>';
     html += '</div>';
     html += '</div>';
@@ -1287,13 +1626,13 @@
 
     var card = document.getElementById('card_' + di);
     var html = '<div class="edit-form">';
-    html += '<label>Gun adi</label><input type="text" id="ed_day_' + di + '" value="' + esc(day.day) + '">';
-    html += '<label>Etiket (bos birakilabilir)</label><input type="text" id="ed_tag_' + di + '" value="' + esc(day.tag || '') + '">';
-    html += '<label>Hareketler (her satir bir hareket &mdash; isim | set/tekrar)</label>';
+    html += '<label>' + t('dayName') + '</label><input type="text" id="ed_day_' + di + '" value="' + esc(day.day) + '">';
+    html += '<label>' + t('tagLabel') + '</label><input type="text" id="ed_tag_' + di + '" value="' + esc(day.tag || '') + '">';
+    html += '<label>' + t('exercisesLabel') + '</label>';
     html += '<textarea id="ed_ex_' + di + '">' + esc(lines.join('\n')) + '</textarea>';
     html += '<div class="row">';
-    html += '<button class="btn solid" onclick="app.saveCard(\'' + plan.id + '\',' + di + ')">Kaydet</button>';
-    html += '<button class="btn" onclick="app.renderNow()">Vazgec</button>';
+    html += '<button class="btn solid" onclick="app.saveCard(\'' + plan.id + '\',' + di + ')">' + t('save') + '</button>';
+    html += '<button class="btn" onclick="app.renderNow()">' + t('cancel') + '</button>';
     html += '</div></div>';
     card.innerHTML = html;
   }
@@ -1311,7 +1650,7 @@
   function renamePlan(id) {
     var p = getPlan(id);
     if (!p) return;
-    var n = prompt('Plan adi:', p.name);
+    var n = prompt(t('planNamePrompt'), p.name);
     if (n == null) return;
     n = n.trim();
     if (!n) return;
@@ -1321,7 +1660,7 @@
   }
 
   function deletePlan(id) {
-    if (!confirm('Bu plan silinsin mi?')) return;
+    if (!confirm(t('deleteConfirm'))) return;
     plans = plans.filter(function (p) { return p.id !== id; });
     if (activeId === id) activeId = plans.length ? plans[0].id : null;
     if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
@@ -1340,7 +1679,7 @@
     var p = getPlan(pid);
     if (!p) return;
     var day = p.days[di];
-    day.day = document.getElementById('ed_day_' + di).value.trim() || 'GUN';
+    day.day = document.getElementById('ed_day_' + di).value.trim() || t('dayFallback');
     day.tag = document.getElementById('ed_tag_' + di).value.trim();
     var lines = document.getElementById('ed_ex_' + di).value.split(/\r?\n/);
     day.exercises = [];
@@ -1376,6 +1715,36 @@
     render();
   }
 
+  /* ---------- yardim (?) ---------- */
+
+  function helpOpen() {
+    var m = document.getElementById('helpModal');
+    if (m) m.classList.add('open');
+  }
+
+  function helpClose() {
+    var m = document.getElementById('helpModal');
+    if (m) m.classList.remove('open');
+  }
+
+  function helpLang(l) {
+    var tr = document.getElementById('helpBodyTr');
+    var en = document.getElementById('helpBodyEn');
+    var tb = document.getElementById('helpTrBtn');
+    var eb = document.getElementById('helpEnBtn');
+    if (l === 'en' && en) {
+      if (tr) tr.style.display = 'none';
+      if (en) en.style.display = '';
+      if (tb) tb.classList.remove('active');
+      if (eb) eb.classList.add('active');
+    } else {
+      if (tr) tr.style.display = '';
+      if (en) en.style.display = 'none';
+      if (tb) tb.classList.add('active');
+      if (eb) eb.classList.remove('active');
+    }
+  }
+
   window.app = {
     renderNow: render,
     wizCancel: wizCancel,
@@ -1401,9 +1770,14 @@
     saveCard: saveCard,
     toggleEx: toggleEx,
     setKg: setKg,
-    resetPlan: resetPlan
+    resetPlan: resetPlan,
+    helpOpen: helpOpen,
+    helpClose: helpClose,
+    helpLang: helpLang,
+    setLang: setLang
   };
 
+  setLang(lang);
   render();
 })();
 </script>
