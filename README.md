@@ -18,7 +18,7 @@ Forge, haftalık antrenman programlarını oluşturmanı, takip etmeni ve tek bi
 Proje sunucusuzdur; tek yapman gereken HTML dosyalarını tarayıcıda açmak veya GitHub Pages üzerinden yayınlamak.
 
 ```
-https://ahmetcode-p.github.io/Fitness/forgev1.html
+https://ahmetcode-p.github.io/Forge/forgev1.html
 ```
 
 ### Program oluştur
