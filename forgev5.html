@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge</title>
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="apple-touch-icon" href="icon.jpg">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    color: #eee;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header { text-align: center; margin-bottom: 2.5rem; }
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: #e8ff47;
+    line-height: 1;
+  }
+
+  .subtitle {
+    color: #555;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    background: #111;
+    border: 1px solid #222;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .toolbar .title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #e8ff47;
+    cursor: pointer;
+    margin-right: auto;
+  }
+
+  select, input[type=text], input[type=number] {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 3px;
+    color: #eee;
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+  select:focus, input[type=text]:focus, input[type=number]:focus { outline: none; border-color: #e8ff47; }
+
+  .btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: #888;
+    font-family: inherit;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+  }
+  .btn:hover { border-color: #e8ff47; color: #e8ff47; }
+  .btn.solid { background: #e8ff47; border-color: #e8ff47; color: #0a0a0a; font-weight: 800; }
+  .btn.solid:hover { filter: brightness(1.1); color: #0a0a0a; }
+  .btn.danger:hover { border-color: #ff4747; color: #ff4747; }
+
+  .wizard-box { max-width: 760px; margin: 0 auto; }
+
+  .step {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+  }
+  .step .day-big {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: #e8ff47;
+    line-height: 1;
+  }
+  .step .counter { color: #555; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; }
+
+  .field-label {
+    font-size: 0.62rem;
+    color: #555;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .wiz-card { background: #111; border: 1px solid #222; padding: 1.2rem; }
+
+  .ex-input-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 110px 30px;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .ex-input-row input { width: 100%; }
+  .ex-input-row input::placeholder { color: #333; }
+
+  .ex-input-row .del {
+    background: none;
+    border: none;
+    color: #444;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .ex-input-row .del:hover { color: #ff4747; }
+
+  .add-ex {
+    margin-top: 0.4rem;
+    border: 1px dashed #333;
+    background: none;
+    color: #666;
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.7rem;
+    cursor: pointer;
+  }
+  .add-ex:hover { border-color: #e8ff47; color: #e8ff47; }
+
+  .wiz-nav { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .wiz-nav .grow { flex: 1; }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .day-card { background: #111; border: 1px solid #222; padding: 1.5rem; }
+
+  .day-head { display: flex; align-items: flex-start; gap: 0.5rem; }
+  .day-head .grow { flex: 1; min-width: 0; }
+
+  .day-label {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #e8ff47;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+
+  .day-tag {
+    font-size: 0.62rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 0.2rem 0 1rem;
+    border-left: 2px solid #e8ff47;
+    padding-left: 0.5rem;
+  }
+
+  .edit-link { background: none; border: none; color: #444; font-size: 0.85rem; cursor: pointer; padding: 2px 4px; }
+  .edit-link:hover { color: #e8ff47; }
+
+  .ex-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.4rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .ex-row:last-of-type { border-bottom: none; }
+
+  .rest-row {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0.4rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .rest-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #8a8a8a;
+  }
+
+  .rest-note {
+    margin: 1rem 0;
+    padding: 0.7rem 1rem;
+    border: 1px dashed #e67e22;
+    border-radius: 8px;
+    color: #e67e22;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .ex-check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+    border: 1.5px solid #555;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+  }
+  .ex-check:checked { background: #e8ff47; border-color: #e8ff47; }
+  .ex-check:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 1px;
+    width: 5px; height: 9px;
+    border: 2.5px solid #000;
+    border-top: none; border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .ex-info { flex: 1; min-width: 0; }
+
+  .ex-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #eee;
+    line-height: 1.3;
+    display: block;
+    word-break: break-word;
+  }
+  .ex-name.done { text-decoration: line-through; opacity: 0.35; }
+
+  .ex-detail { font-size: 0.63rem; color: #555; margin-top: 0.1rem; display: block; word-break: break-word; }
+
+  .kg-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+  .kg-input {
+    width: 46px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 3px;
+    color: #e8ff47;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: inherit;
+    text-align: center;
+    padding: 5px 2px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .kg-input::placeholder { color: #333; }
+  .kg-input:focus { outline: none; border-color: #e8ff47; }
+
+  .kg-label { font-size: 0.52rem; color: #444; margin-top: 2px; }
+
+  .reset-btn {
+    display: block;
+    margin: 3rem auto 0;
+    background: transparent;
+    border: 1px solid #222;
+    color: #444;
+    font-family: inherit;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+  }
+  .reset-btn:hover { color: #e8ff47; border-color: #e8ff47; }
+
+  .empty { color: #444; text-align: center; padding: 3rem 1rem; font-size: 0.85rem; line-height: 1.7; }
+
+  .edit-form { display: flex; flex-direction: column; gap: 0.6rem; }
+  .edit-form label { font-size: 0.62rem; color: #555; text-transform: uppercase; letter-spacing: 0.15em; }
+  .edit-form textarea { min-height: 140px; font-size: 0.78rem; padding: 0.7rem; }
+
+  textarea {
+    width: 100%;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 3px;
+    color: #eee;
+    font-family: inherit;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding: 1rem;
+    resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: #e8ff47; }
+
+  .row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 1.4rem; }
+
+  .code-input { width: 170px; }
+
+  .code-area { max-width: 760px; margin: 2.5rem auto 0; }
+  .code-row { display: flex; gap: 0.6rem; align-items: stretch; }
+  .code-btns { display: flex; flex-direction: column; gap: 0.5rem; }
+  .code-btns .btn { flex: 1; white-space: nowrap; }
+  .code-box {
+    flex: 1;
+    min-height: 44px;
+    max-height: 110px;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    padding: 0.6rem;
+    resize: none;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* ---------- mobil ---------- */
+
+  body { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+
+  @media (max-width: 640px) {
+    body { padding: 1.2rem 0.75rem 3rem; }
+
+    h1 { font-size: 2.3rem; letter-spacing: 0.06em; }
+    .subtitle { font-size: 0.58rem; letter-spacing: 0.14em; }
+    header { margin-bottom: 1.8rem; }
+
+    .toolbar { flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem; }
+    .toolbar .title { width: 100%; text-align: center; margin-right: 0; }
+    .toolbar .btn { flex: 1 1 auto; min-width: 120px; }
+    .toolbar select { flex: 1 1 100%; }
+    .toolbar .code-input { flex: 1 1 100%; width: auto; }
+
+    .wizard-box { max-width: 100%; }
+
+    .step { flex-direction: column; text-align: center; gap: 0.3rem; margin-bottom: 1.2rem; }
+    .step .day-big { font-size: 1.9rem; }
+
+    .ex-input-row { grid-template-columns: 1fr 1fr 32px; }
+    .ex-input-row .in-name { grid-column: 1 / -1; }
+    .ex-input-row .del { justify-self: center; }
+
+    .wiz-nav { gap: 0.5rem; }
+    .wiz-nav .btn { flex: 1; }
+
+    .days-grid { gap: 1rem; }
+    .day-card { padding: 1.1rem; }
+    .day-label { font-size: 1.35rem; }
+
+    .btn { padding: 0.75rem 1rem; }
+
+    .reset-btn { width: 100%; }
+
+    .code-area { max-width: 100%; }
+    .code-row { flex-direction: column; }
+    .code-btns { flex-direction: row; }
+    .code-btns .btn { width: 100%; flex: 1; }
+  }
+
+  /* ---------- yardim (?) ---------- */
+
+  .lang-switch {
+    position: fixed;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 1000;
+    display: flex;
+    gap: 0.3rem;
+  }
+  .lang-switch button {
+    background: #111;
+    border: 1px solid #333;
+    color: #888;
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+  }
+  .lang-switch button:first-child { border-radius: 4px 0 0 4px; }
+  .lang-switch button:last-child { border-radius: 0 4px 4px 0; }
+  .lang-switch button.active { background: #e8ff47; border-color: #e8ff47; color: #0a0a0a; }
+
+  .help-btn {
+    position: fixed;
+    top: 0.9rem;
+    right: 0.9rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e8ff47;
+    border: none;
+    color: #0a0a0a;
+    font-size: 1.15rem;
+    font-weight: 900;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .help-btn:hover { filter: brightness(1.1); }
+
+  .help-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .help-modal.open { display: flex; }
+
+  .help-panel {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .help-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+
+  .help-lang {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .help-lang .btn.active { border-color: #e8ff47; color: #e8ff47; }
+
+  .help-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 2px 8px;
+  }
+  .help-close:hover { color: #ff4747; }
+
+  .help-body h2 {
+    font-size: 1.05rem;
+    color: #e8ff47;
+    letter-spacing: 0.04em;
+    margin: 1.4rem 0 0.5rem;
+  }
+  .help-body h2:first-child { margin-top: 0; }
+  .help-body p, .help-body li { font-size: 0.8rem; color: #ccc; line-height: 1.55; }
+  .help-body ul { padding-left: 1.2rem; margin: 0.4rem 0; }
+  .help-body li { margin-bottom: 0.3rem; }
+  .help-body .code-line {
+    font-family: Consolas, monospace;
+    font-size: 0.72rem;
+    color: #e8ff47;
+    word-break: break-all;
+    background: #1a1a1a;
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+  }
+  .help-body table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+  .help-body th, .help-body td {
+    border: 1px solid #2a2a2a;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    text-align: left;
+    color: #ccc;
+  }
+  .help-body th { color: #e8ff47; background: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="siteTitle">FORGE</h1>
+  <p class="subtitle"><span id="siteSub">Haftalik Antrenman Programi Olusturucu</span> <span id="siteVer" style="color:#e67e22;font-weight:bold">v5</span></p>
+</header>
+
+<div class="wrap">
+  <div id="app"></div>
+</div>
+
+<div class="lang-switch">
+  <button id="langTrBtn" onclick="app.setLang('tr')">TR</button>
+  <button id="langEnBtn" onclick="app.setLang('en')">EN</button>
+</div>
+
+<button class="help-btn" onclick="app.helpOpen()" title="Yardim / Readme">&quest;</button>
+
+<div class="help-modal" id="helpModal">
+  <div class="help-panel">
+    <div class="help-top">
+      <div class="help-lang">
+        <button class="btn active" id="helpTrBtn" onclick="app.setLang('tr')">TR</button>
+        <button class="btn" id="helpEnBtn" onclick="app.setLang('en')">EN</button>
+      </div>
+      <button class="help-close" onclick="app.helpClose()">&times;</button>
+    </div>
+
+    <div class="help-body" id="helpBodyTr">
+      <h2>Forge nedir?</h2>
+      <p>Haftalik antrenman programlarini olustur, takip et ve tek bir kod ile paylas. Tamamen tarayicida calisir, hesap gerekmez.</p>
+
+      <h2>Ozellikler</h2>
+      <ul>
+        <li><b>7 gunluk program sihirbazi</b> &mdash; her gune kas grubu ve hareket ekle.</li>
+        <li><b>Antrenman takibi</b> &mdash; yapilan hareketleri isaretle, kilolari yaz.</li>
+        <li><b>Kod ile paylasim</b> &mdash; programi tek satirlik sıkistirilmis koda cevir, karsi taraf yapistirip acar.</li>
+        <li><b>Checksum korumasi</b> &mdash; kopyalamada bozulan kod aninda yakalanir, net uyari verilir.</li>
+        <li><b>Geriye donuk uyumluluk</b> &mdash; eski formatlar (ANT1./ANT2./ANT4.) da acilir.</li>
+        <li><b>Veri cihazda</b> &mdash; programlar ve ilerleme tarayici depolamasinda saklanir.</li>
+      </ul>
+
+      <h2>Nasil kullanilir?</h2>
+      <ul>
+        <li><b>Olustur:</b> Gun gun kas grubu ve hareketleri gir, "Bitir &amp; Olustur" de.</li>
+        <li><b>Takip et:</b> Kutucuklari isaretle, kilolari gir, hafta sonunda "Tumunu Sifirla".</li>
+        <li><b>Paylas:</b> Alttaki kodu "Kopyala" ile al. Instagram kodu bozabilir; WhatsApp, mail gibi uygulamalardan kodu paylasabilirsiniz.</li>
+      </ul>
+
+      <h2>Kod sistemi</h2>
+      <table>
+        <tr><th>Format</th><th>Aciklama</th></tr>
+        <tr><td>ANT1.</td><td>Ilk surum &mdash; duz base64 (2100+ karakter)</td></tr>
+        <tr><td>ANT2.</td><td>LZ + base64 ile sikistirilmis</td></tr>
+        <tr><td>ANT4.</td><td>LZ + URL-guvenli ozel alfabe (~680 karakter)</td></tr>
+        <tr><td>ANT5.</td><td>ANT4 + sağlamlik kontrolu (checksum) &mdash; guncel</td></tr>
+      </table>
+    </div>
+
+    <div class="help-body" id="helpBodyEn" style="display:none">
+      <h2>What is Forge?</h2>
+      <p>Create weekly workout programs, track them, and share them with a single code. Runs fully in the browser, no account needed.</p>
+
+      <h2>Features</h2>
+      <ul>
+        <li><b>7-day program wizard</b> &mdash; add a muscle group and exercises for each day.</li>
+        <li><b>Workout tracking</b> &mdash; check off completed exercises, log your weights.</li>
+        <li><b>Share via code</b> &mdash; turn the program into a one-line compressed code; the recipient pastes and opens it.</li>
+        <li><b>Checksum protection</b> &mdash; a corrupted copy is detected instantly with a clear message.</li>
+        <li><b>Backward compatible</b> &mdash; legacy formats (ANT1./ANT2./ANT4.) still open.</li>
+        <li><b>Data stays on device</b> &mdash; programs and progress are stored in browser storage.</li>
+      </ul>
+
+      <h2>How to use</h2>
+      <ul>
+        <li><b>Create:</b> fill in muscle groups and exercises day by day, then hit "Finish &amp; Create".</li>
+        <li><b>Track:</b> tick the boxes, log weights, then "Reset All" at the end of the week.</li>
+        <li><b>Share:</b> copy the code below with "Copy". Instagram can corrupt the code; you can share it via apps like WhatsApp or email.</li>
+      </ul>
+
+      <h2>Code system</h2>
+      <table>
+        <tr><th>Format</th><th>Description</th></tr>
+        <tr><td>ANT1.</td><td>First version &mdash; plain base64 (2100+ chars)</td></tr>
+        <tr><td>ANT2.</td><td>Compressed with LZ + base64</td></tr>
+        <tr><td>ANT4.</td><td>LZ + URL-safe custom alphabet (~680 chars)</td></tr>
+        <tr><td>ANT5.</td><td>ANT4 + integrity check (checksum) &mdash; current</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PLANS_KEY = 'sp_plans_v1';
+  var ACTIVE_KEY = 'sp_active';
+
+  var DAYS = ['PAZARTESI', 'SALI', 'CARSAMBA', 'PERSEMBE', 'CUMA', 'CUMARTESI', 'PAZAR'];
+
+  var plans = loadPlans();
+  var activeId = localStorage.getItem(ACTIVE_KEY);
+  if (!getPlan(activeId)) activeId = plans.length ? plans[0].id : null;
+
+  var wizard = null; // { dayIndex, entries: { GUN: { tag, exercises: [{name,sets,reps}] } } }
+
+  var app = document.getElementById('app');
+
+  /* ---------- dil ---------- */
+
+  var lang = localStorage.getItem('forge_lang') || 'tr';
+
+  var STR = {
+    tr: {
+      newProgram: 'YENI PROGRAM', openCode: 'Kodu Ac', cancel: 'Vazgec',
+      programName: 'Program Adi', programNamePh: 'Antrenman Programim',
+      day: 'Gun', muscleGroup: 'Bu gunun kas grubu (istege bagli)',
+      tagPh: 'Sirt - Biceps', exercisesSetsReps: 'Hareketler &mdash; set &mdash; tekrar',
+      exercisePh: 'Hareket (Bench Press)', setPh: 'Set', repsPh: 'Tekrar (8-12)',
+      'delete': 'Sil', addExercise: '+ Hareket Ekle', back: 'Geri', skipDay: 'Bu Gunu Atla',
+      finishCreate: 'Bitir &amp; Olustur', nextDay: 'Sonraki Gun',
+      newProgramBtn: 'Yeni Program', resetAll: 'Tumunu Sifirla', programCode: 'Program Kodu',
+      copy: 'Kopyala', share: 'Paylas', copied: 'Kopyalandi',
+      copiedToClipboard: 'Kod panoya kopyalandi.',
+      shareNotSupported: 'Paylas desteklenmiyor, kodu elle kopyala.',
+      copyFailed: 'Kopyalanamadi. Kodu elle secip kopyala.',
+      rename: 'Duzenle', renameTitle: 'Adi degistirmek icin tikla',
+      dayName: 'Gun adi', tagLabel: 'Etiket (bos birakilabilir)',
+      exercisesLabel: 'Hareketler (her satir bir hareket &mdash; isim | set/tekrar)',
+      save: 'Kaydet', planNamePrompt: 'Plan adi:', deleteConfirm: 'Bu plan silinsin mi?',
+      titleCreator: 'FORGE', subtitleWeekly: 'Haftalik Antrenman Programi',
+      subtitleBuilder: 'Haftalik Antrenman Programi Olusturucu',
+      defaultPlanName: 'Antrenman Programim', importedPlan: 'Icerilen Program',
+      dayFallback: 'GUN', codePh: 'Program kodu', codeShare: ' program kodun:\n',
+      codeEmpty: 'Kod bos gorunuyor. Kodu yapistirip tekrar dene.',
+      invalidCode: 'Gecersiz program kodu.', entered: 'Girilen:', length: 'uzunluk:', detail: 'Detay:',
+      codeBadHint: 'Kod eksik veya bozuk. Basinda "ANT5." (veya eski "ANT4."/"ANT2."/"ANT1.") ile basladigina emin ol.',
+      codeCorrupted: 'Kod kopyalama sirasinda bozulmus (eksik/fazla karakter). Kodu kaynaktan tam olarak kopyala.',
+      codeTooShort: 'Kod cok kisa - eksik kopyalanmis.',
+      invalidChar: 'gecersiz kod karakteri',
+      badDayStructure: 'Kod icindeki gun yapisi hatali (hareket listesi bulunamadi). Kodu mobilde yeniden kopyala.',
+      unexpectedError: 'Beklenmeyen hata:', noDays: 'Hic gun doldurulmadi. En az bir gune hareket eklemelisin.',
+      monday: 'PAZARTESI', tuesday: 'SALI', wednesday: 'CARSAMBA', thursday: 'PERSEMBE',
+      friday: 'CUMA', saturday: 'CUMARTESI', sunday: 'PAZAR',
+      restDay: 'Dinlenme Gunu', restNote: 'Cok mu dinlendik sanki :)'
+    },
+    en: {
+      newProgram: 'NEW PROGRAM', openCode: 'Open Code', cancel: 'Cancel',
+      programName: 'Program Name', programNamePh: 'My Workout Program',
+      day: 'Day', muscleGroup: 'Muscle group for this day (optional)',
+      tagPh: 'Back - Biceps', exercisesSetsReps: 'Exercises &mdash; sets &mdash; reps',
+      exercisePh: 'Exercise (Bench Press)', setPh: 'Sets', repsPh: 'Reps (8-12)',
+      'delete': 'Delete', addExercise: '+ Add Exercise', back: 'Back', skipDay: 'Skip This Day',
+      finishCreate: 'Finish &amp; Create', nextDay: 'Next Day',
+      newProgramBtn: 'New Program', resetAll: 'Reset All', programCode: 'Program Code',
+      copy: 'Copy', share: 'Share', copied: 'Copied',
+      copiedToClipboard: 'Code copied to clipboard.',
+      shareNotSupported: 'Sharing not supported, copy the code manually.',
+      copyFailed: 'Could not copy. Select and copy the code manually.',
+      rename: 'Edit', renameTitle: 'Click to rename',
+      dayName: 'Day name', tagLabel: 'Tag (optional)',
+      exercisesLabel: 'Exercises (one per line &mdash; name | sets/reps)',
+      save: 'Save', planNamePrompt: 'Plan name:', deleteConfirm: 'Delete this plan?',
+      titleCreator: 'FORGE', subtitleWeekly: 'Weekly Workout Program',
+      subtitleBuilder: 'Weekly Workout Program Builder',
+      defaultPlanName: 'My Workout Program', importedPlan: 'Imported Program',
+      dayFallback: 'DAY', codePh: 'Program code', codeShare: ' program code:\n',
+      codeEmpty: 'The code looks empty. Paste the code and try again.',
+      invalidCode: 'Invalid program code.', entered: 'Entered:', length: 'length:', detail: 'Detail:',
+      codeBadHint: 'The code is incomplete or corrupted. Make sure it starts with "ANT5." (or legacy "ANT4."/"ANT2."/"ANT1.").',
+      codeCorrupted: 'The code was corrupted while copying (missing/extra characters). Copy the code fully from the source.',
+      codeTooShort: 'The code is too short - copied incompletely.',
+      invalidChar: 'invalid code character',
+      badDayStructure: 'Invalid day structure in the code (exercise list not found). Re-copy the code on mobile.',
+      unexpectedError: 'Unexpected error:', noDays: 'No days were filled. You must add exercises to at least one day.',
+      monday: 'MONDAY', tuesday: 'TUESDAY', wednesday: 'WEDNESDAY', thursday: 'THURSDAY',
+      friday: 'FRIDAY', saturday: 'SATURDAY', sunday: 'SUNDAY',
+      restDay: 'Rest Day', restNote: 'Resting a lot, huh? :)'
+    }
+  };
+
+  var DAY_EN = { PAZARTESI: 'monday', SALI: 'tuesday', CARSAMBA: 'wednesday', PERSEMBE: 'thursday', CUMA: 'friday', CUMARTESI: 'saturday', PAZAR: 'sunday' };
+
+  function t(k) { return (STR[lang] && STR[lang][k] != null) ? STR[lang][k] : k; }
+
+  function dayLabel(d) {
+    var name = String(d || '');
+    if (lang === 'en' && DAY_EN[name]) return t(DAY_EN[name]);
+    return name;
+  }
+
+  function trDetail(d) {
+    if (lang !== 'en') return d;
+    return String(d || '').replace(/(\d+)\s+set/g, '$1 sets').replace(/(\d+)\s+tekrar/g, '$1 reps');
+  }
+
+  function setLang(l) {
+    if (l !== 'tr' && l !== 'en') l = 'tr';
+    lang = l;
+    try { localStorage.setItem('forge_lang', l); } catch (e) {}
+    var tb = document.getElementById('langTrBtn');
+    var eb = document.getElementById('langEnBtn');
+    if (tb) tb.classList.toggle('active', l === 'tr');
+    if (eb) eb.classList.toggle('active', l === 'en');
+    helpLang(l);
+    render();
+  }
+
+  /* ---------- helpers ---------- */
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function loadPlans() {
+    try { return JSON.parse(localStorage.getItem(PLANS_KEY)) || []; }
+    catch (e) { return []; }
+  }
+
+  function savePlans() { try { localStorage.setItem(PLANS_KEY, JSON.stringify(plans)); } catch (e) {} }
+
+  function getPlan(id) {
+    for (var i = 0; i < plans.length; i++) if (plans[i].id === id) return plans[i];
+    return null;
+  }
+
+  function getState(planId) {
+    try { return JSON.parse(localStorage.getItem('sp_state_' + planId)) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function saveState(planId, s) { try { localStorage.setItem('sp_state_' + planId, JSON.stringify(s)); } catch (e) {} }
+
+  /* ---------- program kodu ---------- */
+
+  var LZString = (function() {
+    var f = String.fromCharCode;
+    var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
+    var baseReverseDic = {};
+
+    function getBaseValue(alphabet, character) {
+      if (!baseReverseDic[alphabet]) {
+        baseReverseDic[alphabet] = {};
+        for (var i = 0; i < alphabet.length; i++) {
+          baseReverseDic[alphabet][alphabet.charAt(i)] = i;
+        }
+      }
+      return baseReverseDic[alphabet][character];
+    }
+
+    var LZString = {
+      compressToBase64: function (input) {
+        if (input == null) return "";
+        var res = LZString._compress(input, 6, function (a) { return keyStrBase64.charAt(a); });
+        switch (res.length % 4) {
+          default:
+          case 0: return res;
+          case 1: return res + "===";
+          case 2: return res + "==";
+          case 3: return res + "=";
+        }
+      },
+      decompressFromBase64: function (input) {
+        if (input == null) return "";
+        if (input == "") return null;
+        return LZString._decompress(input.length, 32, function (index) { return getBaseValue(keyStrBase64, input.charAt(index)); });
+      },
+      _compress: function (uncompressed, bitsPerChar, getCharFromInt) {
+        if (uncompressed == null) return "";
+        var i, value,
+            context_dictionary = {},
+            context_dictionaryToCreate = {},
+            context_c = "",
+            context_wc = "",
+            context_w = "",
+            context_enlargeIn = 2,
+            context_dictSize = 3,
+            context_numBits = 2,
+            context_data = [],
+            context_data_val = 0,
+            context_data_position = 0,
+            ii;
+
+        for (ii = 0; ii < uncompressed.length; ii += 1) {
+          context_c = uncompressed.charAt(ii);
+          if (!Object.prototype.hasOwnProperty.call(context_dictionary, context_c)) {
+            context_dictionary[context_c] = context_dictSize++;
+            context_dictionaryToCreate[context_c] = true;
+          }
+          context_wc = context_w + context_c;
+          if (Object.prototype.hasOwnProperty.call(context_dictionary, context_wc)) {
+            context_w = context_wc;
+          } else {
+            if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
+              if (context_w.charCodeAt(0) < 256) {
+                for (i = 0; i < context_numBits; i++) {
+                  context_data_val = (context_data_val << 1);
+                  if (context_data_position == bitsPerChar - 1) {
+                    context_data_position = 0;
+                    context_data.push(getCharFromInt(context_data_val));
+                    context_data_val = 0;
+                  } else {
+                    context_data_position++;
+                  }
+                }
+                value = context_w.charCodeAt(0);
+                for (i = 0; i < 8; i++) {
+                  context_data_val = (context_data_val << 1) | (value & 1);
+                  if (context_data_position == bitsPerChar - 1) {
+                    context_data_position = 0;
+                    context_data.push(getCharFromInt(context_data_val));
+                    context_data_val = 0;
+                  } else {
+                    context_data_position++;
+                  }
+                  value = value >> 1;
+                }
+              } else {
+                value = 1;
+                for (i = 0; i < context_numBits; i++) {
+                  context_data_val = (context_data_val << 1) | value;
+                  if (context_data_position == bitsPerChar - 1) {
+                    context_data_position = 0;
+                    context_data.push(getCharFromInt(context_data_val));
+                    context_data_val = 0;
+                  } else {
+                    context_data_position++;
+                  }
+                  value = 0;
+                }
+                value = context_w.charCodeAt(0);
+                for (i = 0; i < 16; i++) {
+                  context_data_val = (context_data_val << 1) | (value & 1);
+                  if (context_data_position == bitsPerChar - 1) {
+                    context_data_position = 0;
+                    context_data.push(getCharFromInt(context_data_val));
+                    context_data_val = 0;
+                  } else {
+                    context_data_position++;
+                  }
+                  value = value >> 1;
+                }
+              }
+              context_enlargeIn--;
+              if (context_enlargeIn == 0) {
+                context_enlargeIn = Math.pow(2, context_numBits);
+                context_numBits++;
+              }
+              delete context_dictionaryToCreate[context_w];
+            } else {
+              value = context_dictionary[context_w];
+              for (i = 0; i < context_numBits; i++) {
+                context_data_val = (context_data_val << 1) | (value & 1);
+                if (context_data_position == bitsPerChar - 1) {
+                  context_data_position = 0;
+                  context_data.push(getCharFromInt(context_data_val));
+                  context_data_val = 0;
+                } else {
+                  context_data_position++;
+                }
+                value = value >> 1;
+              }
+            }
+            context_enlargeIn--;
+            if (context_enlargeIn == 0) {
+              context_enlargeIn = Math.pow(2, context_numBits);
+              context_numBits++;
+            }
+            context_dictionary[context_wc] = context_dictSize++;
+            context_w = String(context_c);
+          }
+        }
+
+        if (context_w !== "") {
+          if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
+            if (context_w.charCodeAt(0) < 256) {
+              for (i = 0; i < context_numBits; i++) {
+                context_data_val = (context_data_val << 1);
+                if (context_data_position == bitsPerChar - 1) {
+                  context_data_position = 0;
+                  context_data.push(getCharFromInt(context_data_val));
+                  context_data_val = 0;
+                } else {
+                  context_data_position++;
+                }
+              }
+              value = context_w.charCodeAt(0);
+              for (i = 0; i < 8; i++) {
+                context_data_val = (context_data_val << 1) | (value & 1);
+                if (context_data_position == bitsPerChar - 1) {
+                  context_data_position = 0;
+                  context_data.push(getCharFromInt(context_data_val));
+                  context_data_val = 0;
+                } else {
+                  context_data_position++;
+                }
+                value = value >> 1;
+              }
+            } else {
+              value = 1;
+              for (i = 0; i < context_numBits; i++) {
+                context_data_val = (context_data_val << 1) | value;
+                if (context_data_position == bitsPerChar - 1) {
+                  context_data_position = 0;
+                  context_data.push(getCharFromInt(context_data_val));
+                  context_data_val = 0;
+                } else {
+                  context_data_position++;
+                }
+                value = 0;
+              }
+              value = context_w.charCodeAt(0);
+              for (i = 0; i < 16; i++) {
+                context_data_val = (context_data_val << 1) | (value & 1);
+                if (context_data_position == bitsPerChar - 1) {
+                  context_data_position = 0;
+                  context_data.push(getCharFromInt(context_data_val));
+                  context_data_val = 0;
+                } else {
+                  context_data_position++;
+                }
+                value = value >> 1;
+              }
+            }
+            context_enlargeIn--;
+            if (context_enlargeIn == 0) {
+              context_enlargeIn = Math.pow(2, context_numBits);
+              context_numBits++;
+            }
+            delete context_dictionaryToCreate[context_w];
+          } else {
+            value = context_dictionary[context_w];
+            for (i = 0; i < context_numBits; i++) {
+              context_data_val = (context_data_val << 1) | (value & 1);
+              if (context_data_position == bitsPerChar - 1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = value >> 1;
+            }
+          }
+          context_enlargeIn--;
+          if (context_enlargeIn == 0) {
+            context_enlargeIn = Math.pow(2, context_numBits);
+            context_numBits++;
+          }
+        }
+
+        value = 2;
+        for (i = 0; i < context_numBits; i++) {
+          context_data_val = (context_data_val << 1) | (value & 1);
+          if (context_data_position == bitsPerChar - 1) {
+            context_data_position = 0;
+            context_data.push(getCharFromInt(context_data_val));
+            context_data_val = 0;
+          } else {
+            context_data_position++;
+          }
+          value = value >> 1;
+        }
+
+        while (true) {
+          context_data_val = (context_data_val << 1);
+          if (context_data_position == bitsPerChar - 1) {
+            context_data.push(getCharFromInt(context_data_val));
+            break;
+          }
+          else context_data_position++;
+        }
+        return context_data.join('');
+      },
+      _decompress: function (length, resetValue, getNextValue) {
+        var dictionary = [],
+            next,
+            enlargeIn = 4,
+            dictSize = 4,
+            numBits = 3,
+            entry = "",
+            result = [],
+            i,
+            w,
+            bits, resb, maxpower, power,
+            c,
+            data = { val: getNextValue(0), position: resetValue, index: 1 };
+
+        for (i = 0; i < 3; i += 1) {
+          dictionary[i] = i;
+        }
+
+        bits = 0;
+        maxpower = Math.pow(2, 2);
+        power = 1;
+        while (power != maxpower) {
+          resb = data.val & data.position;
+          data.position >>= 1;
+          if (data.position == 0) {
+            data.position = resetValue;
+            data.val = getNextValue(data.index++);
+          }
+          bits |= (resb > 0 ? 1 : 0) * power;
+          power <<= 1;
+        }
+
+        switch (next = bits) {
+          case 0:
+            bits = 0;
+            maxpower = Math.pow(2, 8);
+            power = 1;
+            while (power != maxpower) {
+              resb = data.val & data.position;
+              data.position >>= 1;
+              if (data.position == 0) {
+                data.position = resetValue;
+                data.val = getNextValue(data.index++);
+              }
+              bits |= (resb > 0 ? 1 : 0) * power;
+              power <<= 1;
+            }
+            c = f(bits);
+            break;
+          case 1:
+            bits = 0;
+            maxpower = Math.pow(2, 16);
+            power = 1;
+            while (power != maxpower) {
+              resb = data.val & data.position;
+              data.position >>= 1;
+              if (data.position == 0) {
+                data.position = resetValue;
+                data.val = getNextValue(data.index++);
+              }
+              bits |= (resb > 0 ? 1 : 0) * power;
+              power <<= 1;
+            }
+            c = f(bits);
+            break;
+          case 2:
+            return "";
+        }
+        dictionary[3] = c;
+        w = c;
+        result.push(c);
+        while (true) {
+          if (data.index > length) {
+            return "";
+          }
+
+          bits = 0;
+          maxpower = Math.pow(2, numBits);
+          power = 1;
+          while (power != maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb > 0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+
+          switch (c = bits) {
+            case 0:
+              bits = 0;
+              maxpower = Math.pow(2, 8);
+              power = 1;
+              while (power != maxpower) {
+                resb = data.val & data.position;
+                data.position >>= 1;
+                if (data.position == 0) {
+                  data.position = resetValue;
+                  data.val = getNextValue(data.index++);
+                }
+                bits |= (resb > 0 ? 1 : 0) * power;
+                power <<= 1;
+              }
+              dictionary[dictSize++] = f(bits);
+              c = dictSize - 1;
+              enlargeIn--;
+              break;
+            case 1:
+              bits = 0;
+              maxpower = Math.pow(2, 16);
+              power = 1;
+              while (power != maxpower) {
+                resb = data.val & data.position;
+                data.position >>= 1;
+                if (data.position == 0) {
+                  data.position = resetValue;
+                  data.val = getNextValue(data.index++);
+                }
+                bits |= (resb > 0 ? 1 : 0) * power;
+                power <<= 1;
+              }
+              dictionary[dictSize++] = f(bits);
+              c = dictSize - 1;
+              enlargeIn--;
+              break;
+            case 2:
+              return result.join('');
+          }
+
+          if (enlargeIn == 0) {
+            enlargeIn = Math.pow(2, numBits);
+            numBits++;
+          }
+
+          if (dictionary[c]) {
+            entry = dictionary[c];
+          } else {
+            if (c === dictSize) {
+              entry = w + w.charAt(0);
+            } else {
+              return null;
+            }
+          }
+          result.push(entry);
+
+          dictionary[dictSize++] = w + entry.charAt(0);
+          enlargeIn--;
+
+          w = entry;
+
+          if (enlargeIn == 0) {
+            enlargeIn = Math.pow(2, numBits);
+            numBits++;
+          }
+        }
+      }
+    };
+    return LZString;
+  })();
+
+  var WEEK = ['PAZARTESI', 'SALI', 'CARSAMBA', 'PERSEMBE', 'CUMA', 'CUMARTESI', 'PAZAR'];
+
+  var CODE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~';
+
+  function packBytesToCode(bytes) {
+    var buf = [1];
+    for (var i = 0; i < bytes.length; i++) buf.push(bytes[i]);
+    var out = [];
+    while (buf.length) {
+      var rem = 0, next = [], q, v;
+      for (i = 0; i < buf.length; i++) {
+        v = rem * 256 + buf[i];
+        q = (v / 66) | 0;
+        if (q || next.length) next.push(q);
+        rem = v % 66;
+      }
+      out.push(rem);
+      buf = next;
+    }
+    var s = '';
+    for (i = out.length - 1; i >= 0; i--) s += CODE_ALPHABET.charAt(out[i]);
+    return s;
+  }
+
+  function codeToBytes(code) {
+    var digits = [];
+    for (var i = 0; i < code.length; i++) {
+      var ch = code.charAt(i);
+      var d = CODE_ALPHABET.indexOf(ch);
+      if (d < 0) {
+        throw new Error(t('invalidChar') + ' "' + ch + '" (Unicode ' + code.charCodeAt(i) + ') pozisyon ' + i);
+      }
+      digits.push(d);
+    }
+    var bytes = [0];
+    for (i = 0; i < digits.length; i++) {
+      var carry = digits[i];
+      for (var j = bytes.length - 1; j >= 0; j--) {
+        var v = bytes[j] * 66 + carry;
+        bytes[j] = v & 255;
+        carry = (v - (v & 255)) / 256;
+      }
+      while (carry > 0) {
+        bytes.unshift(carry & 255);
+        carry = (carry - (carry & 255)) / 256;
+      }
+    }
+    bytes.shift();
+    return bytes;
+  }
+
+  function compactDetail(d) {
+    var m = /^(\d+)\s+set(?:\s*\|\s*([^|]*))?(?:\s*\|\s*(.*))?$/.exec(d || '');
+    if (!m) return d;
+    var reps = (m[2] || '').trim(), note = (m[3] || '').trim();
+    if (/tekrar$/.test(reps)) reps = reps.replace(/\s*tekrar$/i, '').trim();
+    var c = m[1] + ':';
+    if (reps) c += reps;
+    if (note) c += '|' + note;
+    return c;
+  }
+
+  function expandDetail(c) {
+    if (!/^\d+:/.test(c)) return c;
+    var parts = c.split(':');
+    var sets = parts[0];
+    var rest = parts.slice(1).join(':');
+    var reps = '', note = '';
+    var idx = rest.indexOf('|');
+    if (idx >= 0) { reps = rest.slice(0, idx); note = rest.slice(idx + 1); }
+    else reps = rest;
+    var out = [sets + ' set'];
+    if (reps) out.push(reps + ' tekrar');
+    if (note) out.push(note);
+    return out.join(' | ');
+  }
+
+  function slimJson(p) {
+    var days = (p.days || []).map(function (d) {
+      return [WEEK.indexOf(d.day), d.tag || '', (d.exercises || []).map(function (e) {
+        return [e.name, compactDetail(e.detail)];
+      })];
+    });
+    return JSON.stringify({ n: p.name, d: days });
+  }
+
+  function encodePlan(p) {
+    var raw = LZString._compress(slimJson(p), 8, function (a) { return String.fromCharCode(a); });
+    var bytes = [];
+    for (var i = 0; i < raw.length; i++) bytes.push(raw.charCodeAt(i));
+    var packed = packBytesToCode(bytes);
+    return 'ANT5.' + packed + checksum(packed);
+  }
+
+  function checksum(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    return CODE_ALPHABET.charAt(h % 66) + CODE_ALPHABET.charAt(((h >>> 8) % 66));
+  }
+
+  function expandPlan(data) {
+    var days = (data.d || []).map(function (dd, i) {
+      var idx = (dd && typeof dd[0] === 'number' && dd[0] >= 0) ? dd[0] : i;
+      return {
+        day: WEEK[idx] || ('GUN ' + (idx + 1)),
+        tag: (dd && dd[1]) ? String(dd[1]) : '',
+        exercises: ((dd && dd[2]) || []).map(function (e) {
+          return { name: e[0], detail: expandDetail(e[1]) };
+        })
+      };
+    });
+    return { n: data.n, d: days };
+  }
+
+  function decodeCode(c) {
+    var s = String(c || '').trim().replace(/\s+/g, '');
+    if (s.indexOf('ANT5.') === 0) {
+      var body = s.slice(5);
+      if (body.length < 4) throw new Error(t('codeTooShort'));
+      var packed = body.slice(0, -2);
+      var ck = body.slice(-2);
+      if (checksum(packed) !== ck) {
+        throw new Error(t('codeCorrupted'));
+      }
+      var bytes = codeToBytes(packed);
+      var raw = '';
+      for (var i = 0; i < bytes.length; i++) raw += String.fromCharCode(bytes[i]);
+      var json = LZString._decompress(raw.length, 128, function (index) { return raw.charCodeAt(index); });
+      return expandPlan(JSON.parse(json));
+    }
+    if (s.indexOf('ANT4.') === 0) {
+      var bytes = codeToBytes(s.slice(5));
+      if (!bytes) throw new Error(t('invalidChar'));
+      var raw = '';
+      for (var i = 0; i < bytes.length; i++) raw += String.fromCharCode(bytes[i]);
+      var json = LZString._decompress(raw.length, 128, function (index) { return raw.charCodeAt(index); });
+      return expandPlan(JSON.parse(json));
+    }
+    if (s.indexOf('ANT2.') === 0) {
+      var json2 = LZString.decompressFromBase64(s.slice(5));
+      return expandPlan(JSON.parse(json2));
+    }
+    if (s.indexOf('ANT1.') === 0) s = s.slice(5);
+    var legacyJson = decodeURIComponent(escape(atob(s)));
+    return JSON.parse(legacyJson);
+  }
+
+  function importCode(raw) {
+    try {
+      var v = (raw || '').trim();
+      if (!v) { alert(t('codeEmpty')); return false; }
+
+      var data = null;
+      var errMsg = '';
+      try { data = decodeCode(v); } catch (e) { errMsg = (e && e.message) ? e.message : String(e); }
+
+      if (!data || !data.d || !Array.isArray(data.d) || !data.d.length) {
+        var preview = v.length > 12 ? v.slice(0, 12) + '...' : v;
+        alert(t('invalidCode') + '\n\n'
+          + t('entered') + ' "' + preview + '" (' + t('length') + ' ' + v.length + ')\n'
+          + (errMsg ? t('detail') + ' ' + errMsg
+                    : t('codeBadHint')));
+        return false;
+      }
+
+      for (var i = 0; i < data.d.length; i++) {
+        if (!data.d[i] || !Array.isArray(data.d[i].exercises)) {
+          alert(t('badDayStructure'));
+          return false;
+        }
+      }
+
+      var name = data.n || t('importedPlan');
+      var suffix = 2;
+      while (plans.some(function (x) { return x.name === name; })) {
+        name = (data.n || t('importedPlan')) + ' ' + suffix++;
+      }
+      var plan = { id: uid(), name: name, days: data.d, created: Date.now() };
+      plans.push(plan);
+      activeId = plan.id;
+      savePlans();
+      localStorage.setItem(ACTIVE_KEY, activeId);
+      render();
+      return true;
+    } catch (e) {
+      alert(t('unexpectedError') + ' ' + ((e && e.message) ? e.message : String(e)));
+      return false;
+    }
+  }
+
+  function importFromInput() {
+    var inp = document.getElementById('codeIn');
+    if (!inp) return false;
+    var v = inp.value;
+    var ok = importCode(v);
+    if (ok) inp.value = '';
+    else if (v && v.trim()) inp.value = v;
+  }
+
+  function copyPlanCode(pid) {
+    var p = getPlan(pid);
+    if (!p) return;
+    var ta = document.getElementById('planCode');
+    if (!ta) return;
+    var code = encodePlan(p);
+
+    var done = function () {
+      var btn = document.getElementById('copyPlanCodeBtn');
+      if (btn) btn.textContent = t('copied');
+    };
+    var fallback = function () {
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, 999999);
+      try {
+        document.execCommand('copy');
+        done();
+      } catch (e) {
+        alert(t('copyFailed'));
+      }
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function sharePlanCode(pid) {
+    var p = getPlan(pid);
+    if (!p) return;
+    var code = encodePlan(p);
+    var text = p.name + t('codeShare') + code;
+    if (navigator.share) {
+      navigator.share({ title: p.name, text: text }).catch(function () {});
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () {
+        alert(t('copiedToClipboard'));
+      }, function () { alert(t('shareNotSupported')); });
+    } else {
+      alert(text);
+    }
+  }
+
+  /* ---------- wizard ---------- */
+
+  function startWizard() {
+    wizard = { dayIndex: 0, name: '', entries: {} };
+    DAYS.forEach(function (d) {
+      wizard.entries[d] = { tag: '', exercises: [{ name: '', sets: '', reps: '' }] };
+    });
+    render();
+  }
+
+  function currentDay() { return DAYS[wizard.dayIndex]; }
+  function currentEntry() { return wizard.entries[currentDay()]; }
+
+  function renderWizard() {
+    var dayName = currentDay();
+    var entry = currentEntry();
+    var html = '';
+
+    html += '<div class="toolbar">';
+    html += '<span class="title">' + t('newProgram') + '</span>';
+    html += '<input type="text" id="codeIn" class="code-input" placeholder="' + t('codePh') + '" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
+    html += '<button class="btn" onclick="app.importFromInput()">' + t('openCode') + '</button>';
+    html += '<button class="btn" onclick="app.wizCancel()">' + t('cancel') + '</button>';
+    html += '</div>';
+
+    html += '<div class="wizard-box">';
+
+    html += '<div class="wiz-card">';
+    html += '<div class="field-label">' + t('programName') + '</div>';
+    html += '<input type="text" id="wizName" placeholder="' + t('programNamePh') + '" style="width:100%; margin-bottom:1rem" value="' + esc(wizard.name) + '" oninput="app.wizName(this.value)">';
+    html += '</div>';
+
+    html += '<div class="step">';
+    html += '<div class="day-big">' + dayLabel(dayName) + '</div>';
+    html += '<div class="counter">' + t('day') + ' ' + (wizard.dayIndex + 1) + ' / 7</div>';
+    html += '</div>';
+
+    html += '<div class="wiz-card">';
+    html += '<div class="field-label">' + t('muscleGroup') + '</div>';
+    html += '<input type="text" id="wizTag" placeholder="' + t('tagPh') + '" style="width:100%; margin-bottom:1rem" value="' + esc(entry.tag) + '" oninput="app.wizTag(this.value)">';
+
+    html += '<div class="field-label">' + t('exercisesSetsReps') + '</div>';
+    entry.exercises.forEach(function (ex, i) {
+      html += '<div class="ex-input-row">';
+      html += '<input type="text" class="in-name" placeholder="' + t('exercisePh') + '" value="' + esc(ex.name) + '" oninput="app.exName(' + i + ',this.value)">';
+      html += '<input type="number" class="in-set" min="1" placeholder="' + t('setPh') + '" value="' + esc(ex.sets) + '" oninput="app.exSets(' + i + ',this.value)">';
+      html += '<input type="text" class="in-reps" placeholder="' + t('repsPh') + '" value="' + esc(ex.reps) + '" oninput="app.exReps(' + i + ',this.value)">';
+      html += '<button class="del" title="' + t('delete') + '" ' + (entry.exercises.length > 1 ? 'onclick="app.exRemove(' + i + ')"' : 'disabled') + '>&times;</button>';
+      html += '</div>';
+    });
+    html += '<button class="add-ex" onclick="app.exAdd()">' + t('addExercise') + '</button>';
+    html += '</div>';
+
+    html += '<div class="wiz-nav">';
+    if (wizard.dayIndex > 0) html += '<button class="btn" onclick="app.wizPrev()">' + t('back') + '</button>';
+    html += '<button class="btn" onclick="app.wizSkip()">' + t('skipDay') + '</button>';
+    html += '<span class="grow"></span>';
+    html += '<button class="btn solid" onclick="app.wizNext()">' + (wizard.dayIndex === DAYS.length - 1 ? t('finishCreate') : t('nextDay')) + '</button>';
+    html += '</div>';
+
+    html += '</div>';
+
+    app.innerHTML = html;
+  }
+
+  function wizTag(v) { currentEntry().tag = v; }
+  function wizName(v) { wizard.name = v; }
+  function exName(i, v) { currentEntry().exercises[i].name = v; }
+  function exSets(i, v) { currentEntry().exercises[i].sets = v; }
+  function exReps(i, v) { currentEntry().exercises[i].reps = v; }
+
+  function exAdd() {
+    currentEntry().exercises.push({ name: '', sets: '', reps: '' });
+    render();
+  }
+
+  function exRemove(i) {
+    var exs = currentEntry().exercises;
+    if (exs.length <= 1) return;
+    exs.splice(i, 1);
+    render();
+  }
+
+  function wizPrev() { if (wizard.dayIndex > 0) { wizard.dayIndex--; render(); } }
+
+  function wizSkip() {
+    if (wizard.dayIndex === DAYS.length - 1) { finishWizard(); return; }
+    wizard.dayIndex++;
+    render();
+  }
+
+  function wizNext() {
+    if (wizard.dayIndex === DAYS.length - 1) { finishWizard(); return; }
+    wizard.dayIndex++;
+    render();
+  }
+
+  function wizCancel() { wizard = null; render(); }
+
+  function finishWizard() {
+    var days = [];
+    var training = 0;
+    DAYS.forEach(function (d) {
+      var e = wizard.entries[d];
+      var exs = e.exercises
+        .filter(function (x) { return (x.name || '').trim(); })
+        .map(function (x) {
+          var name = x.name.trim();
+          var sets = (x.sets || '').trim();
+          var reps = (x.reps || '').trim();
+          var detail = [];
+          if (sets) detail.push(sets + ' set');
+          if (reps) detail.push(reps + ' tekrar');
+          return { name: name, detail: detail.join(' | ') };
+        });
+      if (exs.length) {
+        training++;
+        days.push({ day: d, tag: e.tag.trim(), exercises: exs });
+      } else {
+        days.push({ day: d, tag: '', exercises: [] });
+      }
+    });
+
+    if (!training) {
+      alert(t('noDays'));
+      return;
+    }
+
+    var name = (wizard.name || '').trim() || t('defaultPlanName');
+
+    var plan = { id: uid(), name: name, days: days, created: Date.now() };
+    plans.push(plan);
+    activeId = plan.id;
+    savePlans();
+    localStorage.setItem(ACTIVE_KEY, activeId);
+    wizard = null;
+    render();
+  }
+
+  /* ---------- render ---------- */
+
+  function render() {
+    var title = document.getElementById('siteTitle');
+    var sub = document.getElementById('siteSub');
+    if (wizard) {
+      if (title) title.textContent = t('titleCreator');
+      if (sub) sub.textContent = 'by Ahmet Efe SOYLEMEZ';
+      renderWizard();
+      return;
+    }
+    var plan = getPlan(activeId);
+    if (plan) {
+      if (title) title.textContent = plan.name;
+      if (sub) sub.textContent = t('subtitleWeekly');
+      renderTracker(plan);
+    } else {
+      if (title) title.textContent = 'FORGE';
+      if (sub) sub.textContent = t('subtitleBuilder');
+      startWizard();
+    }
+  }
+
+  function renderTracker(plan) {
+    var state = getState(plan.id);
+    var restCount = 0;
+    plan.days.forEach(function (day) {
+      if (!day.exercises || !day.exercises.length) restCount++;
+    });
+    var html = '';
+
+    html += '<div class="toolbar">';
+    html += '<span class="title" title="' + t('renameTitle') + '" onclick="app.renamePlan(\'' + plan.id + '\')">' + esc(plan.name) + '</span>';
+    if (plans.length > 1) {
+      html += '<select onchange="app.switchPlan(this.value)">';
+      for (var i = 0; i < plans.length; i++) {
+        html += '<option value="' + plans[i].id + '"' + (plans[i].id === plan.id ? ' selected' : '') + '>' + esc(plans[i].name) + '</option>';
+      }
+      html += '</select>';
+    }
+    html += '<input type="text" id="codeIn" class="code-input" placeholder="' + t('codePh') + '" onkeydown="if(event.key===\'Enter\')app.importFromInput()">';
+    html += '<button class="btn" onclick="app.importFromInput()">' + t('openCode') + '</button>';
+    html += '<button class="btn" onclick="app.newProgram()">' + t('newProgramBtn') + '</button>';
+    html += '<button class="btn danger" onclick="app.deletePlan(\'' + plan.id + '\')">' + t('delete') + '</button>';
+    html += '</div>';
+
+    html += '<div class="days-grid">';
+
+    plan.days.forEach(function (day, di) {
+      html += '<div class="day-card" id="card_' + di + '">';
+      html += '<div class="day-head">';
+      html += '<div class="grow">';
+      html += '<div class="day-label">' + esc(dayLabel(day.day)) + '</div>';
+      if (day.tag) html += '<div class="day-tag">' + esc(day.tag) + '</div>';
+      html += '</div>';
+      html += '<button class="edit-link" title="' + t('rename') + '" onclick="app.editCard(\'' + plan.id + '\',' + di + ')">&#9998;</button>';
+      html += '</div>';
+
+      if (day.exercises && day.exercises.length) {
+        day.exercises.forEach(function (ex, ei) {
+          var id = di + '_' + ei;
+          var checked = state['c_' + id];
+          var kg = state['k_' + id] || '';
+          html += '<div class="ex-row">';
+          html += '<input type="checkbox" class="ex-check" ' + (checked ? 'checked' : '') + ' onchange="app.toggleEx(\'' + plan.id + '\',\'' + id + '\',this.checked)">';
+          html += '<div class="ex-info">';
+          html += '<span class="ex-name' + (checked ? ' done' : '') + '" id="name_' + id + '">' + esc(ex.name) + '</span>';
+          if (ex.detail) html += '<span class="ex-detail">' + esc(trDetail(ex.detail)) + '</span>';
+          html += '</div>';
+          html += '<div class="kg-wrap"><input class="kg-input" type="number" placeholder="--" value="' + esc(kg) + '" oninput="app.setKg(\'' + plan.id + '\',\'' + id + '\',this.value)"><span class="kg-label">kg</span></div>';
+          html += '</div>';
+        });
+      } else {
+        html += '<div class="rest-row"><span class="rest-label">' + t('restDay') + '</span></div>';
+      }
+
+      html += '</div>';
+    });
+
+    html += '</div>';
+
+    if (restCount > 3) {
+      html += '<div class="rest-note">' + t('restNote') + '</div>';
+    }
+
+    html += '<button class="reset-btn" onclick="app.resetPlan(\'' + plan.id + '\')">' + t('resetAll') + '</button>';
+
+    html += '<div class="code-area">';
+    html += '<div class="field-label">' + t('programCode') + '</div>';
+    html += '<div class="code-row">';
+    html += '<textarea id="planCode" class="code-box" readonly>' + esc(encodePlan(plan)) + '</textarea>';
+    html += '<div class="code-btns">';
+    html += '<button class="btn solid" id="copyPlanCodeBtn" onclick="app.copyPlanCode(\'' + plan.id + '\')">' + t('copy') + '</button>';
+    html += '<button class="btn" onclick="app.sharePlanCode(\'' + plan.id + '\')">' + t('share') + '</button>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    app.innerHTML = html;
+  }
+
+  function renderCardEditor(plan, di) {
+    var day = plan.days[di];
+    var lines = [];
+    day.exercises.forEach(function (ex) {
+      lines.push(ex.name + (ex.detail ? ' | ' + ex.detail : ''));
+    });
+
+    var card = document.getElementById('card_' + di);
+    var html = '<div class="edit-form">';
+    html += '<label>' + t('dayName') + '</label><input type="text" id="ed_day_' + di + '" value="' + esc(day.day) + '">';
+    html += '<label>' + t('tagLabel') + '</label><input type="text" id="ed_tag_' + di + '" value="' + esc(day.tag || '') + '">';
+    html += '<label>' + t('exercisesLabel') + '</label>';
+    html += '<textarea id="ed_ex_' + di + '">' + esc(lines.join('\n')) + '</textarea>';
+    html += '<div class="row">';
+    html += '<button class="btn solid" onclick="app.saveCard(\'' + plan.id + '\',' + di + ')">' + t('save') + '</button>';
+    html += '<button class="btn" onclick="app.renderNow()">' + t('cancel') + '</button>';
+    html += '</div></div>';
+    card.innerHTML = html;
+  }
+
+  /* ---------- actions ---------- */
+
+  function newProgram() { startWizard(); }
+
+  function switchPlan(id) {
+    activeId = id;
+    localStorage.setItem(ACTIVE_KEY, id);
+    render();
+  }
+
+  function renamePlan(id) {
+    var p = getPlan(id);
+    if (!p) return;
+    var n = prompt(t('planNamePrompt'), p.name);
+    if (n == null) return;
+    n = n.trim();
+    if (!n) return;
+    p.name = n;
+    savePlans();
+    render();
+  }
+
+  function deletePlan(id) {
+    if (!confirm(t('deleteConfirm'))) return;
+    plans = plans.filter(function (p) { return p.id !== id; });
+    if (activeId === id) activeId = plans.length ? plans[0].id : null;
+    if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
+    else localStorage.removeItem(ACTIVE_KEY);
+    savePlans();
+    render();
+  }
+
+  function editCard(pid, di) {
+    var p = getPlan(pid);
+    if (!p) return;
+    renderCardEditor(p, di);
+  }
+
+  function saveCard(pid, di) {
+    var p = getPlan(pid);
+    if (!p) return;
+    var day = p.days[di];
+    day.day = document.getElementById('ed_day_' + di).value.trim() || t('dayFallback');
+    day.tag = document.getElementById('ed_tag_' + di).value.trim();
+    var lines = document.getElementById('ed_ex_' + di).value.split(/\r?\n/);
+    day.exercises = [];
+    lines.forEach(function (l) {
+      l = l.trim();
+      if (!l) return;
+      var m = l.indexOf('|');
+      var ex;
+      if (m > -1) ex = { name: l.slice(0, m).trim(), detail: l.slice(m + 1).trim() };
+      else ex = { name: l, detail: '' };
+      if (ex.name) day.exercises.push(ex);
+    });
+    savePlans();
+    render();
+  }
+
+  function toggleEx(pid, id, checked) {
+    var s = getState(pid);
+    s['c_' + id] = checked;
+    saveState(pid, s);
+    var el = document.getElementById('name_' + id);
+    if (el) el.classList.toggle('done', checked);
+  }
+
+  function setKg(pid, id, val) {
+    var s = getState(pid);
+    s['k_' + id] = val;
+    saveState(pid, s);
+  }
+
+  function resetPlan(pid) {
+    localStorage.removeItem('sp_state_' + pid);
+    render();
+  }
+
+  /* ---------- yardim (?) ---------- */
+
+  function helpOpen() {
+    var m = document.getElementById('helpModal');
+    if (m) m.classList.add('open');
+  }
+
+  function helpClose() {
+    var m = document.getElementById('helpModal');
+    if (m) m.classList.remove('open');
+  }
+
+  function helpLang(l) {
+    var tr = document.getElementById('helpBodyTr');
+    var en = document.getElementById('helpBodyEn');
+    var tb = document.getElementById('helpTrBtn');
+    var eb = document.getElementById('helpEnBtn');
+    if (l === 'en' && en) {
+      if (tr) tr.style.display = 'none';
+      if (en) en.style.display = '';
+      if (tb) tb.classList.remove('active');
+      if (eb) eb.classList.add('active');
+    } else {
+      if (tr) tr.style.display = '';
+      if (en) en.style.display = 'none';
+      if (tb) tb.classList.add('active');
+      if (eb) eb.classList.remove('active');
+    }
+  }
+
+  window.app = {
+    renderNow: render,
+    wizCancel: wizCancel,
+    wizName: wizName,
+    wizTag: wizTag,
+    exName: exName,
+    exSets: exSets,
+    exReps: exReps,
+    exAdd: exAdd,
+    exRemove: exRemove,
+    wizPrev: wizPrev,
+    wizSkip: wizSkip,
+    wizNext: wizNext,
+    importCode: importCode,
+    importFromInput: importFromInput,
+    copyPlanCode: copyPlanCode,
+    sharePlanCode: sharePlanCode,
+    newProgram: newProgram,
+    switchPlan: switchPlan,
+    renamePlan: renamePlan,
+    deletePlan: deletePlan,
+    editCard: editCard,
+    saveCard: saveCard,
+    toggleEx: toggleEx,
+    setKg: setKg,
+    resetPlan: resetPlan,
+    helpOpen: helpOpen,
+    helpClose: helpClose,
+    helpLang: helpLang,
+    setLang: setLang
+  };
+
+  setLang(lang);
+  render();
+})();
+</script>
+</body>
+</html>
